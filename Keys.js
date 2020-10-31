@@ -1,10 +1,10 @@
 import React from 'react';
 import { Text } from 'react-native';
 
-export default Display = props => {
+export default Keys = props => {
     return (
         <Text>
-            Display
+            Keys
         </Text>
     )
 }

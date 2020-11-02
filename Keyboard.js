@@ -12,7 +12,7 @@ export default Keyboard = props => {
                     <View key={index} style={{ flexDirection: 'row' }}>
                         {
                             charList.map(char => (
-                                <Keys key={char} onType={props.onType} isCaptial={props.isCaptial} char={char} />
+                                <Keys for={props.keyboard} key={char} onType={props.onType} isCaptial={props.isCaptial} char={char} />
                             ))
                         }
                     </View>
@@ -21,10 +21,10 @@ export default Keyboard = props => {
                     <View style={styles.splitContainer}>
                         {
                             config.HandyBoard.left.map((charList, index) => (
-                                <View key={index} style={{ flexDirection: 'row' }}>
+                                <View key={index} style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
                                     {
                                         charList.map(char => (
-                                            <Keys key={char} onType={props.onType} isCaptial={props.isCaptial} char={char} />
+                                            <Keys for={props.keyboard} key={char} onType={props.onType} isCaptial={props.isCaptial} char={char} />
                                         ))
                                     }
                                 </View>
@@ -37,10 +37,10 @@ export default Keyboard = props => {
                     <View style={styles.splitContainer}>
                         {
                             config.HandyBoard.right.map((charList, index) => (
-                                <View key={index} style={{ flexDirection: 'row' }}>
+                                <View key={index} style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
                                     {
                                         charList.map(char => (
-                                            <Keys key={char} onType={props.onType} isCaptial={props.isCaptial} char={char} />
+                                            <Keys for={props.keyboard} key={char} onType={props.onType} isCaptial={props.isCaptial} char={char} />
                                         ))
                                     }
                                 </View>

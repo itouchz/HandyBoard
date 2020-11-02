@@ -5,7 +5,7 @@ export default Keys = props => {
     const { width, height } = useWindowDimensions();
     const char = props.isCaptial ? props.char.toUpperCase() : props.char.toLowerCase()
     return props.char === 'spacebar' ?
-        <TouchableHighlight style={styles.spaceKey, { width: width * 0.8 }} onPress={() => props.onType(' ')} underlayColor="black" >
+        <TouchableHighlight style={styles.spaceKey, { width: props.for === 'QWERTY' ? width * 0.8 : width * 0.4 }} onPress={() => props.onType(' ')} underlayColor="black" >
             <View style={styles.spaceKey}>
                 <Text style={styles.keyText}> </Text>
             </View>

@@ -10,7 +10,7 @@ export default Keys = props => {
                 <Text style={styles.keyText}> </Text>
             </View>
         </TouchableHighlight> :
-        <TouchableHighlight style={styles.key, { width: width / 11, margin: 2 }} onPress={() => props.onType(char)} underlayColor="black" >
+        <TouchableHighlight style={styles.key, { width: width / 14, margin: 2 }} onPress={() => props.onType(char)} underlayColor="black" >
             <View style={styles.key}>
                 {
                     props.char === 'backspace' || props.char === 'shift' ? <Text style={styles.keyText}>{props.char === 'backspace' ? '⇦' : '⇪'}</Text> : <Text style={styles.keyText}>{char}</Text>

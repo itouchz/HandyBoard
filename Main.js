@@ -9,6 +9,7 @@ export default class HomeScreen extends Component {
     state = {
         targetText: 'video camera with a zoom lens',
         currentText: '',
+        currentKeyboard: 'HandyBoard',
         isCaptial: false,
     }
 
@@ -30,7 +31,7 @@ export default class HomeScreen extends Component {
         return <View style={styles.container}>
             <Display style={styles.display} textColor='black' fontSize={24} text={this.state.targetText} />
             <Display style={styles.preview} textColor='white' fontSize={22} isBold={true} text={this.state.currentText + '_'} />
-            <Keyboard onType={this.onType} isCaptial={this.state.isCaptial} />
+            <Keyboard keyboard={this.state.currentKeyboard} onType={this.onType} isCaptial={this.state.isCaptial} />
         </View>
     }
 }

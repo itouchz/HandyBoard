@@ -1,0 +1,22 @@
+{
+    "QWERTY": [
+        ["Q","W","E","R","T","Y","U","I","O","P"],
+        ["A","S","D","F","G","H","J","K","L"],
+        ["shift","Z","X","C","V","B","N","M","backspace"],
+        ["spacebar"]
+    ],
+    "HandyBoard": {
+        "left": [
+            ["Q","W","E","R","T"],
+            ["A","S","D","F","G"],
+            ["shift","Z","X","C","V"]
+        ],
+        "right": [
+            ["Y","U","I","O","P"],
+            ["H","J","K","L"],
+            ["B","N","M","backspace"]
+        ],
+        "center": ["spacebar"]
+    }
+
+}

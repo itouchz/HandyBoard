@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { StyleSheet, View } from 'react-native'
-import Display from './Display'
-import Keyboard from './Keyboard'
+import Home from './Home'
+import Block from './Block'
 
 // Class component for managing events 
 export default class HomeScreen extends Component {
@@ -9,7 +9,11 @@ export default class HomeScreen extends Component {
     state = {
         targetText: 'video camera with a zoom lens',
         currentText: '',
-        currentKeyboard: 'HandyBoard',
+        currentScreen: 'home',
+        currentKeyboard: 'QWERTY',
+        currentBlockState: 'start',
+        currentPhraseSet: [],
+        currentBlockNo: 1,
         isCaptial: false,
     }
 
@@ -17,21 +21,31 @@ export default class HomeScreen extends Component {
         if (char.toLowerCase() === 'shift') {
             this.setState({ isCaptial: !this.state.isCaptial })
         } else if (char.toLowerCase() === 'backspace') {
-            this.setState({currentText: this.state.currentText.substring(0, this.state.currentText.length - 1)})
+            this.setState({ currentText: this.state.currentText.substring(0, this.state.currentText.length - 1) })
         } else {
             this.setState({ currentText: this.state.currentText + char, isCaptial: false })
         }
     }
 
-    onDelete = () => {
+    onSelectKeyboard = keyboard => {
+        this.setState({ currentKeyboard: keyboard, currentScreen: 'block', currentBlockState: 'start' })
+    }
 
+    onStartBlock = blockNo => {
+        // TODO: random update currentPhraseSet
+        // TODO: initialize localstorage for currentBlockNo
+        this.setState({ currentBlockState: 'ongoing' })
     }
 
     render() {
         return <View style={styles.container}>
-            <Display style={styles.display} textColor='black' fontSize={24} text={this.state.targetText} />
-            <Display style={styles.preview} textColor='white' fontSize={22} isBold={true} text={this.state.currentText + '_'} />
-            <Keyboard keyboard={this.state.currentKeyboard} onType={this.onType} isCaptial={this.state.isCaptial} />
+            {
+                this.state.currentScreen === 'home'
+                    ? <Home onSelectKeyboard={this.onSelectKeyboard} />
+                    : <Block currentBlockState={this.state.currentBlockState} onType={this.onType} currentKeyboard={this.state.currentKeyboard}
+                        currentText={this.state.currentText} onStartBlock={this.onStartBlock} currentPhraseSet={this.state.currentPhraseSet}
+                        currentBlockNo={this.state.currentBlockNo} targetText={this.state.targetText} isCaptial={this.state.isCaptial} />
+            }
         </View>
     }
 }

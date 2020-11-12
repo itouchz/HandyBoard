@@ -14,8 +14,8 @@
         ],
         "right": [
             ["Y","U","I","O","P"],
-            ["H","J","K","L"],
-            ["B","N","M","backspace"],
+            ["H","J","K","L","backspace"],
+            ["B","N","M","enter"],
             ["spacebar"]
         ],
         "center": ["spacebar"]

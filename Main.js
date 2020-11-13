@@ -44,7 +44,6 @@ export default class HomeScreen extends Component {
     }
 
     onResizeSpace = action => {
-        console.log(this.state.spacePercentage)
         if (this.state.spacePercentage > 0 && this.state.spacePercentage < 1) {
             if (action === 'up') {
                 this.setState({ spacePercentage: this.state.spacePercentage + 0.01 })

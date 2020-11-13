@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, View, Dimensions } from 'react-native'
 import Home from './Home'
 import Block from './Block'
-import { BLOCK } from './constants'
+import PhraseSets from './PhraseSets.json'
 
 // Class component for managing events 
 export default class HomeScreen extends Component {
 
     state = {
-        targetText: BLOCK[1][0],
+        targetText: '',
         currentText: '',
         currentScreen: 'home',
         currentKeyboard: 'QWERTY',
@@ -17,29 +17,43 @@ export default class HomeScreen extends Component {
         currentBlockNo: 1,
         currentBlockIndex: 0,
         isCaptial: false,
+        showCompleteModal: false,
         interval: 0,
+        resultText: '',
         second: 0,
-        errorCount: 0,        
+        errorCount: 0,
+        spacePercentage: 0.2
     }
 
     // Timer
     onStart = () => {
         this.state.interval = setInterval(() => {
-         this.setState({
-           second: this.state.second + 1,
-        })
-     }, 1000);
+            this.setState({
+                second: this.state.second + 1,
+            })
+        }, 1000);
     }
-   
+
     onPause = () => {
         clearInterval(this.state.interval);
     }
-    
+
     onReset = () => {
-        this.setState({
-          second: 0,
-        });
+        this.setState({ second: 0, });
         clearInterval(this.state.interval);
+    }
+
+    onResizeSpace = action => {
+        console.log(this.state.spacePercentage)
+        if (this.state.spacePercentage > 0 && this.state.spacePercentage < 1) {
+            if (action === 'up') {
+                this.setState({ spacePercentage: this.state.spacePercentage + 0.01 })
+            } else {
+                this.setState({ spacePercentage: this.state.spacePercentage - 0.01 })
+            }
+        } else {
+            this.setState({ spacePercentage: 0.2 })
+        }
     }
 
     onType = char => {
@@ -49,30 +63,38 @@ export default class HomeScreen extends Component {
             this.setState({ currentText: this.state.currentText.substring(0, this.state.currentText.length - 1) })
         } else if (char.toLowerCase() === 'enter') {
             // Done typing, record time, calculate WPM, Accuracy
-            var len_text = this.state.currentText.length;
-            var min = (this.state.second/60);
-            var wpm = (len_text/5)/min;
-            wpm = wpm.toFixed(2);
-            var accuracy = ((this.state.targetText.length - this.state.errorCount)/this.state.targetText.length)*100;
-            accuracy = accuracy.toFixed(2);
-            var net_wpm = wpm - (this.state.errorCount/min);
-            net_wpm = net_wpm.toFixed(3);
-            this.setState({ 
-                targetText: "WPM: " + wpm.toString() + 
-                " NET_WPM: " + net_wpm.toString() + 
-            " Accuracy: " + accuracy.toString() + 
-            " Time: " + this.state.second.toString() + " seconds",                
+            let [wpm, net_wpm, accuracy] = [0, 0, 0]
+
+            if (this.state.currentText.length > 0) {
+                let len_text = this.state.currentText.length;
+                let min = (this.state.second / 60);
+
+                wpm = (len_text / 5) / min;
+                wpm = wpm.toFixed(2);
+                accuracy = ((this.state.targetText.length - this.state.errorCount) / this.state.targetText.length) * 100;
+                accuracy = accuracy.toFixed(2);
+                net_wpm = wpm - (this.state.errorCount / min);
+                net_wpm = net_wpm.toFixed(3);
+            }
+
+            this.setState({
+                showCompleteModal: true,
+                resultText: "WPM: " + wpm.toString() +
+                    " NET_WPM: " + net_wpm.toString() +
+                    " ACC: " + accuracy.toString() +
+                    " Time: " + this.state.second.toString() + " seconds",
             })
-            // Reset Tim
+
+            // Reset Time
             this.onReset();
         } else {
             this.setState({ currentText: this.state.currentText + char, isCaptial: false })
             var len_text = this.state.currentText.length;
             // console.log(char)
             // console.log(this.state.targetText[len_text])
-            if (char != this.state.targetText[len_text]){
+            if (char != this.state.targetText[len_text]) {
                 this.setState({ errorCount: this.state.errorCount + 1 })
-                
+
             }
         }
 
@@ -82,57 +104,66 @@ export default class HomeScreen extends Component {
         this.setState({ currentKeyboard: keyboard, currentScreen: 'block', currentBlockState: 'start' })
     }
 
-    onStartBlock = (blockNo,blockIndex,button) => {
-        // TODO: random update currentPhraseSet
-        // TODO: initialize localstorage for currentBlockNo
-        if (button == "next"){
-            if (blockIndex <= 4){
-                this.setState({
-                    currentBlockState: 'ongoing', 
-                    targetText: BLOCK[blockNo][blockIndex], 
-                    currentBlockIndex: blockIndex,
-                    currentText: '',
-                    errorCount: 0
-                })
-            }
-            else{
-                this.setState({
-                    currentBlockState: 'start', 
-                    targetText: BLOCK[blockNo+1][0], 
-                    currentBlockIndex: 0,
-                    currentBlockNo: (this.state.currentBlockNo+1),
-                    currentText: '',
-                    errorCount: 0
-                })
-            }
-            this.onStart();
+    onStartBlock = () => {
+        let blockNo = this.state.currentBlockNo
+        let currentPhraseSet = PhraseSets.phrases[blockNo].sort(() => 0.5 - Math.random()).slice(0, 5)
+        this.setState({
+            currentBlockState: 'ongoing', targetText: currentPhraseSet[0], currentBlockIndex: 0,
+            currentBlockNo: blockNo, currentPhraseSet, currentText: '', errorCount: 0
+        })
+        this.onStart()
+    }
+
+    onNextPhrase = () => {
+        let blockIndex = this.state.currentBlockIndex + 1
+        if (blockIndex <= 4) {
+            this.setState({
+                currentBlockState: 'ongoing',
+                targetText: this.state.currentPhraseSet[blockIndex],
+                currentBlockIndex: blockIndex,
+                currentText: '',
+                errorCount: 0,
+                showCompleteModal: false
+            })
+            this.onStart()
+        } else {
+            this.setState({ showCompleteModal: false })
+            this.onNextBlock()
         }
-        else{
-            if (button == "home"){
-                this.setState({
-                    targetText: BLOCK[1][0],
-                    currentText: '',
-                    currentScreen: 'home',
-                    currentKeyboard: 'QWERTY',
-                    currentBlockState: 'start',
-                    currentPhraseSet: [],
-                    currentBlockNo: 1,
-                    currentBlockIndex: 0,
-                    isCaptial: false,
-                    interval: 0,
-                    second: 0,
-                    errorCount: 0,        
-                })
-            }
-            else{
-                this.setState({
-                    currentBlockState: 'start', 
-                    currentText: '',
-                    errorCount: 0
-                })
-            }
-            this.onReset();
+    }
+
+    onNextBlock = () => {
+        let blockNo = this.state.currentBlockNo + 1
+        if (blockNo <= 5) {
+            this.setState({
+                currentBlockState: 'start',
+                currentBlockIndex: 0,
+                currentBlockNo: blockNo,
+                currentText: '',
+                errorCount: 0,
+            })
+            this.onReset()
+        } else {
+            this.setState({
+                currentBlockState: 'end',
+                currentBlockIndex: 0,
+                currentBlockNo: 0,
+                currentText: '',
+                errorCount: 0,
+            })
+            this.onReset()
         }
+    }
+
+    onBackHome = () => {
+        this.setState({
+            currentScreen: 'home',
+            currentBlockState: 'start',
+            currentBlockIndex: 0,
+            currentBlockNo: 1,
+            currentText: '',
+            errorCount: 0,
+        })
     }
 
     render() {
@@ -143,7 +174,8 @@ export default class HomeScreen extends Component {
                     : <Block currentBlockState={this.state.currentBlockState} onType={this.onType} currentKeyboard={this.state.currentKeyboard}
                         currentText={this.state.currentText} onStartBlock={this.onStartBlock} currentPhraseSet={this.state.currentPhraseSet}
                         currentBlockNo={this.state.currentBlockNo} targetText={this.state.targetText} isCaptial={this.state.isCaptial}
-                        currentBlockIndex={this.state.currentBlockIndex} />
+                        resultText={this.state.resultText} onNextPhrase={this.onNextPhrase} onBackHome={this.onBackHome} onResizeSpace={this.onResizeSpace}
+                        currentBlockIndex={this.state.currentBlockIndex} showCompleteModal={this.state.showCompleteModal} spacePercentage={this.state.spacePercentage} />
             }
         </View>
     }

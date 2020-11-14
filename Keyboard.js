@@ -9,7 +9,7 @@ const viewportWidth = Dimensions.get('window').width;
 
 export default Keyboard = props => {
     const splitWidth = viewportWidth * ((1 - props.spacePercentage) / 2)
-    const keyWidth = splitWidth / 5.25
+    const keyWidth = splitWidth / 5.05
 
     return <View style={styles.container}>
         {

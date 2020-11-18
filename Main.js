@@ -133,16 +133,25 @@ export default class HomeScreen extends Component {
 
     onNextBlock = () => {
         let blockNo = this.state.currentBlockNo + 1
-        if (blockNo <= 5) {
+        if (blockNo == 2) {
             this.setState({
-                currentBlockState: 'start',
+                currentBlockState: 'practice',
                 currentBlockIndex: 0,
                 currentBlockNo: blockNo,
                 currentText: '',
                 errorCount: 0,
             })
             this.onReset()
-        } else {
+        } else if(blockNo <= 7) {
+            this.setState({
+                currentBlockState: 'task',
+                currentBlockIndex: 0,
+                currentBlockNo: blockNo,
+                currentText: '',
+                errorCount: 0,
+            })
+            this.onReset()
+        }else {
             this.setState({
                 currentBlockState: 'end',
                 currentBlockIndex: 0,

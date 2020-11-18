@@ -18,12 +18,26 @@ export default Block = props => {
         {
             props.currentBlockState === 'start'
                 ? <View style={{ alignItems: 'center' }}>
-                    <Text style={{ fontSize: 72, marginBottom: 16, fontStyle: 'italic' }}>Block No.{props.currentBlockNo}</Text>
+                    <Text style={{ fontSize: 72, marginBottom: 16, fontStyle: 'italic' }}>Adjustment Block</Text>
                     <TouchableHighlight style={{ ...styles.button }} underlayColor='#eee' onPress={props.onStartBlock}>
                         <Text style={{ ...styles.buttonText }}>START</Text>
                     </TouchableHighlight>
                 </View>
-                : props.currentBlockState === 'end' ?
+                : props.currentBlockState === 'practice' ?
+                    <View style={{ alignItems: 'center' }}>
+                        <Text style={{ fontSize: 72, marginBottom: 16, fontStyle: 'italic' }}>Practice Block</Text>
+                        <TouchableHighlight style={{ ...styles.button }} underlayColor='#eee' onPress={props.onStartBlock}>
+                            <Text style={{ ...styles.buttonText }}>START</Text>
+                        </TouchableHighlight>
+                    </View>
+                    : props.currentBlockState === 'task' ?
+                    <View style={{ alignItems: 'center' }}>
+                        <Text style={{ fontSize: 72, marginBottom: 16, fontStyle: 'italic' }}>Block No.{props.currentBlockNo - 2}</Text>
+                        <TouchableHighlight style={{ ...styles.button }} underlayColor='#eee' onPress={props.onStartBlock}>
+                            <Text style={{ ...styles.buttonText }}>START</Text>
+                        </TouchableHighlight>
+                    </View>
+                    :props.currentBlockState === 'end' ?
                     <View style={{ alignItems: 'center' }}>
                         <Text style={{ fontSize: 48, marginBottom: 16, fontStyle: 'italic' }}>Completed!</Text>
                         <Text style={{ fontSize: 24, marginBottom: 16 }}> 🙏🏻 Thank you 🙏🏻 </Text>

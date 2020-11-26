@@ -100,7 +100,10 @@ export default class HomeScreen extends Component {
     }
 
     onSelectKeyboard = keyboard => {
-        this.setState({ currentKeyboard: keyboard, currentScreen: 'block', currentBlockState: 'start' })
+        this.setState({
+            currentKeyboard: keyboard, currentScreen: 'block', currentBlockNo: keyboard === 'QWERTY' ? 2 : 1,
+            currentBlockState: keyboard === 'QWERTY' ? 'practice' : 'start'
+        })
     }
 
     onStartBlock = () => {
@@ -142,7 +145,7 @@ export default class HomeScreen extends Component {
                 errorCount: 0,
             })
             this.onReset()
-        } else if(blockNo <= 7) {
+        } else if (blockNo <= 7) {
             this.setState({
                 currentBlockState: 'task',
                 currentBlockIndex: 0,
@@ -151,7 +154,7 @@ export default class HomeScreen extends Component {
                 errorCount: 0,
             })
             this.onReset()
-        }else {
+        } else {
             this.setState({
                 currentBlockState: 'end',
                 currentBlockIndex: 0,

@@ -32,7 +32,7 @@ export default Block = props => {
                     </View>
                     : props.currentBlockState === 'task' ?
                         <View style={{ alignItems: 'center' }}>
-                            <Text style={{ fontSize: 72, marginBottom: 16, fontStyle: 'italic' }}>Block No.{props.currentBlockNo - 2}</Text>
+                            <Text style={{ fontSize: 72, marginBottom: 16, fontStyle: 'italic' }}>Block No.{props.currentBlockNo - 1}</Text>
                             <TouchableHighlight style={{ ...styles.button }} underlayColor='#eee' onPress={props.onStartBlock}>
                                 <Text style={{ ...styles.buttonText }}>START</Text>
                             </TouchableHighlight>

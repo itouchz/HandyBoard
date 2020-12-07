@@ -11,7 +11,7 @@ export default class HomeScreen extends Component {
         targetText: '',
         currentText: '',
         currentScreen: 'home',
-        currentKeyboard: 'QWERTY',
+        currentKeyboard: 'IS_QWERTY',
         currentBlockState: 'start',
         currentPhraseSet: [],
         currentBlockNo: 1,
@@ -107,26 +107,44 @@ export default class HomeScreen extends Component {
 
     onSelectKeyboard = keyboard => {
         this.setState({
-            currentKeyboard: keyboard, currentScreen: 'block', currentBlockNo: keyboard === 'QWERTY' ? 2 : 1,
-            currentBlockState: keyboard === 'QWERTY' ? 'practice' : 'start'
+            currentKeyboard: keyboard, currentScreen: 'block', 
+            currentBlockState: 'start'
         })
     }
 
     onStartBlock = () => {
-        let blockNo = this.state.currentBlockNo
+        let blockNo = (this.state.currentBlockNo % 8)
         let currentPhraseSet = PhraseSets.phrases[blockNo].sort(() => 0.5 - Math.random()).slice(0, 5)
-        this.setState({
-            currentBlockState: 'ongoing', targetText: currentPhraseSet[0], currentBlockIndex: 0,
-            currentBlockNo: blockNo, currentPhraseSet, currentText: '', errorCount: 0
-        })
+        if (this.state.currentBlockState === 'start'){
+            //ADJUSTMENT BLOCK
+            this.setState({
+                currentBlockState: 'ongoing_start', targetText: currentPhraseSet[0], currentBlockIndex: 0,
+                currentBlockNo: blockNo, currentPhraseSet, currentText: '', errorCount: 0
+            })
+        }
+        else{
+            //TASK BLOCK
+            this.setState({
+                currentBlockState: 'ongoing_task', targetText: currentPhraseSet[0], currentBlockIndex: 0,
+                currentBlockNo: blockNo, currentPhraseSet, currentText: '', errorCount: 0
+            })
+        }
+        
         this.onStart()
     }
 
     onNextPhrase = () => {
         let blockIndex = this.state.currentBlockIndex + 1
-        if (blockIndex <= 4) {
+        if (blockIndex > 4 || this.state.currentBlockState == 'ongoing_start') {
+            // if adjustment block, do just 1 phrase
+            this.setState({                 
+                showCompleteModal: false 
+            })
+            this.onNextBlock()
+        } else {
+            
             this.setState({
-                currentBlockState: 'ongoing',
+                // currentBlockState: 'ongoing',
                 targetText: this.state.currentPhraseSet[blockIndex],
                 currentBlockIndex: blockIndex,
                 currentText: '',
@@ -134,24 +152,13 @@ export default class HomeScreen extends Component {
                 showCompleteModal: false
             })
             this.onStart()
-        } else {
-            this.setState({ showCompleteModal: false })
-            this.onNextBlock()
         }
     }
 
     onNextBlock = () => {
         let blockNo = this.state.currentBlockNo + 1
-        if (blockNo == 2) {
-            this.setState({
-                currentBlockState: 'practice',
-                currentBlockIndex: 0,
-                currentBlockNo: blockNo,
-                currentText: '',
-                errorCount: 0,
-            })
-            this.onReset()
-        } else if (blockNo <= 7) {
+        if (blockNo <= 6 && this.state.currentBlockState == 'ongoing_start') {
+            // Task CASE
             this.setState({
                 currentBlockState: 'task',
                 currentBlockIndex: 0,
@@ -159,6 +166,29 @@ export default class HomeScreen extends Component {
                 currentText: '',
                 errorCount: 0,
             })
+            this.onReset()
+        } else if (blockNo <= 6 && this.state.currentBlockState == 'ongoing_task') {
+            if (this.state.currentKeyboard === 'IS_QWERTY'){
+                // Task CASE
+                this.setState({
+                    currentBlockState: 'task',
+                    currentBlockIndex: 0,
+                    currentBlockNo: blockNo,
+                    currentText: '',
+                    errorCount: 0,
+                })
+            }
+            else{
+                // ADJUSTMENT CASE
+                this.setState({
+                    currentBlockState: 'start',
+                    currentBlockIndex: 0,
+                    currentBlockNo: blockNo - 1,
+                    currentText: '',
+                    errorCount: 0,
+                })
+            }
+            
             this.onReset()
         } else {
             this.setState({

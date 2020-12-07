@@ -13,7 +13,7 @@ export default Keyboard = props => {
 
     return <View style={styles.container}>
         {
-            props.keyboard === 'QWERTY' ?
+            props.keyboard === 'NO_MORE_QWERTY' ?
                 config.QWERTY.map((charList, index) => (
                     <View key={index} style={{ flexDirection: 'row' }}>
                         {

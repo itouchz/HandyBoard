@@ -5,8 +5,8 @@ export default Home = props => {
     return (
         <View style={styles.container}>
             <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'center' }}>
-                <TouchableHighlight style={{ borderColor: '#78281F', ...styles.button }} underlayColor='#FADBD8' onPress={() => props.onSelectKeyboard('QWERTY')}>
-                    <Text style={{ color: '#78281F', ...styles.buttonText }}>QWERTY</Text>
+                <TouchableHighlight style={{ borderColor: '#78281F', ...styles.button }} underlayColor='#FADBD8' onPress={() => props.onSelectKeyboard('IS_QWERTY')}>
+                    <Text style={{ color: '#78281F', ...styles.buttonText }}>Fixed Size Keyboard</Text>
                 </TouchableHighlight>
 
                 <TouchableHighlight style={{ borderColor: '#0E6251', ...styles.button }} underlayColor='#D1F2EB' onPress={() => props.onSelectKeyboard('HandyBoard')}>

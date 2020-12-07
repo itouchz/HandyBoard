@@ -18,6 +18,7 @@ export default class HomeScreen extends Component {
         currentBlockIndex: 0,
         isCaptial: false,
         showCompleteModal: false,
+        showResizeKey: true,
         interval: 0,
         resultText: '',
         second: 0,
@@ -53,6 +54,11 @@ export default class HomeScreen extends Component {
         } else {
             this.setState({ spacePercentage: 0.2 })
         }
+    }
+
+    onToggleReizeKey = () => {
+        alert('Resizable: ' + !this.state.showResizeKey)
+        this.setState({ showResizeKey: !this.state.showResizeKey })
     }
 
     onType = char => {
@@ -186,7 +192,8 @@ export default class HomeScreen extends Component {
                         currentText={this.state.currentText} onStartBlock={this.onStartBlock} currentPhraseSet={this.state.currentPhraseSet}
                         currentBlockNo={this.state.currentBlockNo} targetText={this.state.targetText} isCaptial={this.state.isCaptial}
                         resultText={this.state.resultText} onNextPhrase={this.onNextPhrase} onBackHome={this.onBackHome} onResizeSpace={this.onResizeSpace}
-                        currentBlockIndex={this.state.currentBlockIndex} showCompleteModal={this.state.showCompleteModal} spacePercentage={this.state.spacePercentage} />
+                        currentBlockIndex={this.state.currentBlockIndex} showCompleteModal={this.state.showCompleteModal}
+                        spacePercentage={this.state.spacePercentage} onToggleReizeKey={this.onToggleReizeKey} showResizeKey={this.state.showResizeKey} />
             }
         </View>
     }

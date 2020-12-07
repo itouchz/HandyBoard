@@ -3,12 +3,12 @@ import { StyleSheet, View, Text, TouchableHighlight } from 'react-native';
 
 export default ResizeKey = props => {
     return <View>
-        <TouchableHighlight style={{ ...styles.key }} onPress={() => props.onResizeSpace('up')} underlayColor="grey" >
+        <TouchableHighlight style={{ ...styles.key }} onPress={() => props.onResizeSpace('up')} underlayColor="grey" disabled={!props.showResizeKey}>
             <View>
                 <Text style={styles.keyText}>+</Text>
             </View>
         </TouchableHighlight>
-        <TouchableHighlight style={{ ...styles.key }} onPress={() => props.onResizeSpace('down')} underlayColor="grey" >
+        <TouchableHighlight style={{ ...styles.key }} onPress={() => props.onResizeSpace('down')} underlayColor="grey" disabled={!props.showResizeKey}>
             <View>
                 <Text style={styles.keyText}>-</Text>
             </View>

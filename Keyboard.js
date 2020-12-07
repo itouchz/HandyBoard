@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Dimensions } from 'react-native'
+import { StyleSheet, Text, View, Dimensions, TouchableWithoutFeedback } from 'react-native'
 import Keys from './Keys'
 import ResizeKey from './ResizeKey'
 import config from './config.json'
@@ -37,10 +37,11 @@ export default Keyboard = props => {
                             ))
                         }
                     </View>
-                    <View style={{ width: viewportWidth * props.spacePercentage, alignItems: 'center' }}>
-                        <ResizeKey onResizeSpace={props.onResizeSpace} />
-                        {/* <Text style={{ color: 'white' }}>- space -</Text> */}
-                    </View>
+                    <TouchableWithoutFeedback onLongPress={props.onToggleReizeKey} delayLongPress={2000}>
+                        <View style={{ width: viewportWidth * props.spacePercentage, alignItems: 'center' }}>
+                            <ResizeKey showResizeKey={props.showResizeKey} onResizeSpace={props.onResizeSpace} />
+                        </View>
+                    </TouchableWithoutFeedback>
                     <View style={{ width: splitWidth }}>
                         {
                             config.HandyBoard.right.map((charList, index) => (

@@ -14,7 +14,7 @@ export default class HomeScreen extends Component {
         currentKeyboard: 'IS_QWERTY',
         currentBlockState: 'start',
         currentPhraseSet: [],
-        currentBlockNo: 1,
+        currentBlockNo: 0,
         currentBlockIndex: 0,
         isCaptial: false,
         showCompleteModal: false,
@@ -23,7 +23,11 @@ export default class HomeScreen extends Component {
         resultText: '',
         second: 0,
         errorCount: 0,
-        spacePercentage: 0.2
+        spacePercentage: 0.2,
+        statusText: '',
+        pid: Math.floor(Math.random() * 9).toString() + Math.floor(Math.random() * 9).toString() + Math.floor(Math.random() * 9).toString(),
+        currentGroup: null,
+        inSetCount: 0
     }
 
     // Timer
@@ -105,100 +109,158 @@ export default class HomeScreen extends Component {
 
     }
 
-    onSelectKeyboard = keyboard => {
+    onSelectKeyboard = group => {
+        let keyboard = group === 'GROUP_1' ? 'Fixed' : 'HandyBoard'
         this.setState({
-            currentKeyboard: keyboard, currentScreen: 'block', 
-            currentBlockState: 'start'
+            currentKeyboard: keyboard, currentScreen: 'block',
+            currentBlockState: keyboard === 'Fixed' ? 'practice' : 'adjustment', spacePercentage: 0.2,
+            currentGroup: group, statusText: `${group}: ${keyboard} (P${this.state.pid})`
         })
     }
 
     onStartBlock = () => {
-        let blockNo = (this.state.currentBlockNo % 8)
+        let blockNo = this.state.currentBlockNo
         let currentPhraseSet = PhraseSets.phrases[blockNo].sort(() => 0.5 - Math.random()).slice(0, 5)
-        if (this.state.currentBlockState === 'start'){
+        if (this.state.currentBlockState === 'adjustment') {
             //ADJUSTMENT BLOCK
             this.setState({
-                currentBlockState: 'ongoing_start', targetText: currentPhraseSet[0], currentBlockIndex: 0,
-                currentBlockNo: blockNo, currentPhraseSet, currentText: '', errorCount: 0
+                currentBlockState: 'ongoing_adjustment', targetText: currentPhraseSet[0], currentBlockIndex: 0,
+                currentBlockNo: blockNo, currentPhraseSet, currentText: '', errorCount: 0,
+                statusText: `${this.state.currentGroup}: ${this.state.currentKeyboard}, ongoing_adjustment - Block ${blockNo}, ${0 + 1} (P${this.state.pid})`
             })
-        }
-        else{
+        } else if (this.state.currentBlockState === 'practice') {
+            this.setState({
+                currentBlockState: 'ongoing_practice', targetText: currentPhraseSet[0], currentBlockIndex: 0,
+                currentBlockNo: blockNo, currentPhraseSet, currentText: '', errorCount: 0,
+                statusText: `${this.state.currentGroup}: ${this.state.currentKeyboard}, ongoing_practice - Block ${blockNo}, ${0 + 1} (P${this.state.pid})`
+            })
+        } else {
             //TASK BLOCK
             this.setState({
                 currentBlockState: 'ongoing_task', targetText: currentPhraseSet[0], currentBlockIndex: 0,
-                currentBlockNo: blockNo, currentPhraseSet, currentText: '', errorCount: 0
+                currentBlockNo: blockNo, currentPhraseSet, currentText: '', errorCount: 0,
+                statusText: `${this.state.currentGroup}: ${this.state.currentKeyboard}, ongoing_task - Block ${blockNo}, ${0 + 1} (P${this.state.pid})`
             })
         }
-        
+
         this.onStart()
     }
 
     onNextPhrase = () => {
         let blockIndex = this.state.currentBlockIndex + 1
-        if (blockIndex > 4 || this.state.currentBlockState == 'ongoing_start') {
+        if (blockIndex > 4 || this.state.currentBlockState == 'ongoing_adjustment') {
             // if adjustment block, do just 1 phrase
-            this.setState({                 
-                showCompleteModal: false 
-            })
+            this.setState({ showCompleteModal: false })
             this.onNextBlock()
         } else {
-            
             this.setState({
-                // currentBlockState: 'ongoing',
                 targetText: this.state.currentPhraseSet[blockIndex],
                 currentBlockIndex: blockIndex,
                 currentText: '',
                 errorCount: 0,
-                showCompleteModal: false
+                showCompleteModal: false,
+                statusText: `${this.state.currentGroup}: ${this.state.currentKeyboard}, ${this.state.currentBlockState} - Block ${this.state.currentBlockNo}, ${blockIndex + 1} (P${this.state.pid})`
             })
             this.onStart()
         }
     }
 
     onNextBlock = () => {
-        let blockNo = this.state.currentBlockNo + 1
-        if (blockNo <= 6 && this.state.currentBlockState == 'ongoing_start') {
-            // Task CASE
-            this.setState({
-                currentBlockState: 'task',
-                currentBlockIndex: 0,
-                currentBlockNo: blockNo,
-                currentText: '',
-                errorCount: 0,
-            })
-            this.onReset()
-        } else if (blockNo <= 6 && this.state.currentBlockState == 'ongoing_task') {
-            if (this.state.currentKeyboard === 'IS_QWERTY'){
-                // Task CASE
+        let inSetCount = this.state.inSetCount + 1
+        let blockNo = inSetCount % 3 === 0 ? this.state.currentBlockNo + 1 : this.state.currentBlockNo
+
+        if (this.state.currentBlockState === 'ongoing_practice' && blockNo === 0) {
+            if (inSetCount % 3 !== 0 && this.state.currentKeyboard === 'Fixed') {
                 this.setState({
+                    inSetCount, currentBlockState: 'adjustment', currentKeyboard: 'HandyBoard',
+                    statusText: `${this.state.currentGroup}: HandyBoard, adjustment - Block ${blockNo}, ${0 + 1} (P${this.state.pid})`
+                })
+            } else {
+                this.setState({
+                    inSetCount, currentBlockState: 'practice', currentKeyboard: 'Fixed',
+                    statusText: `${this.state.currentGroup}: Fixed, practice - Block ${blockNo}, ${0 + 1} (P${this.state.pid})`
+                })
+            }
+        } else if (this.state.currentBlockState === 'ongoing_adjustment' && blockNo === 0) {
+            this.setState({ inSetCount, currentBlockState: 'practice', currentKeyboard: 'HandyBoard' })
+        } else {
+            if (blockNo <= 5 && this.state.currentBlockState === 'ongoing_adjustment') {
+                this.setState({
+                    inSetCount,
                     currentBlockState: 'task',
                     currentBlockIndex: 0,
                     currentBlockNo: blockNo,
                     currentText: '',
                     errorCount: 0,
                 })
-            }
-            else{
-                // ADJUSTMENT CASE
+                this.onReset()
+            } else if (blockNo <= 5) {
                 this.setState({
-                    currentBlockState: 'start',
+                    inSetCount,
+                    currentKeyboard: this.state.currentKeyboard === 'HandyBoard' ? 'Fixed' : 'HandyBoard',
+                    spacePercentage: this.state.currentKeyboard === 'HandyBoard' ? 0.2 : this.state.spacePercentage,
+                    currentBlockState: this.state.currentKeyboard === 'HandyBoard' ? 'task' : 'adjustment',
                     currentBlockIndex: 0,
-                    currentBlockNo: blockNo - 1,
+                    currentBlockNo: blockNo,
+                    currentText: '',
+                    errorCount: 0,
+                    statusText: `${this.state.currentGroup}: ${this.state.currentKeyboard === 'HandyBoard' ? 'Fixed' : 'HandyBoard'}, ${this.state.currentKeyboard === 'HandyBoard' ? 'task' : 'adjustment'} - Block ${blockNo}, ${0 + 1} (P${this.state.pid})`
+                })
+                this.onReset()
+            } else {
+                this.setState({
+                    inSetCount: 0,
+                    currentBlockState: 'end',
+                    currentBlockIndex: 0,
+                    currentBlockNo: 0,
                     currentText: '',
                     errorCount: 0,
                 })
+                this.onReset()
             }
-            
-            this.onReset()
-        } else {
-            this.setState({
-                currentBlockState: 'end',
-                currentBlockIndex: 0,
-                currentBlockNo: 0,
-                currentText: '',
-                errorCount: 0,
-            })
-            this.onReset()
+
+            // if (blockNo <= 6 && this.state.currentBlockState == 'ongoing_adjustment') {
+            //     // Task CASE
+            //     this.setState({
+            //         currentBlockState: 'task',
+            //         currentBlockIndex: 0,
+            //         currentBlockNo: blockNo,
+            //         currentText: '',
+            //         errorCount: 0,
+            //     })
+            //     this.onReset()
+            // } else if (blockNo <= 6 && this.state.currentBlockState == 'ongoing_task') {
+            //     if (this.state.currentKeyboard === 'IS_QWERTY') {
+            //         // Task CASE
+            //         this.setState({
+            //             currentBlockState: 'task',
+            //             currentBlockIndex: 0,
+            //             currentBlockNo: blockNo,
+            //             currentText: '',
+            //             errorCount: 0,
+            //         })
+            //     } else {
+            //         // ADJUSTMENT CASE
+            //         this.setState({
+            //             currentBlockState: 'start',
+            //             currentBlockIndex: 0,
+            //             currentBlockNo: blockNo - 1,
+            //             currentText: '',
+            //             errorCount: 0,
+            //         })
+            //     }
+
+            //     this.onReset()
+            // } else {
+            //     this.setState({
+            //         currentBlockState: 'end',
+            //         currentBlockIndex: 0,
+            //         currentBlockNo: 0,
+            //         currentText: '',
+            //         errorCount: 0,
+            //     })
+            //     this.onReset()
+            // }
         }
     }
 
@@ -207,7 +269,7 @@ export default class HomeScreen extends Component {
             currentScreen: 'home',
             currentBlockState: 'start',
             currentBlockIndex: 0,
-            currentBlockNo: 1,
+            currentBlockNo: 0,
             currentText: '',
             errorCount: 0,
         })
@@ -222,7 +284,7 @@ export default class HomeScreen extends Component {
                         currentText={this.state.currentText} onStartBlock={this.onStartBlock} currentPhraseSet={this.state.currentPhraseSet}
                         currentBlockNo={this.state.currentBlockNo} targetText={this.state.targetText} isCaptial={this.state.isCaptial}
                         resultText={this.state.resultText} onNextPhrase={this.onNextPhrase} onBackHome={this.onBackHome} onResizeSpace={this.onResizeSpace}
-                        currentBlockIndex={this.state.currentBlockIndex} showCompleteModal={this.state.showCompleteModal}
+                        currentBlockIndex={this.state.currentBlockIndex} showCompleteModal={this.state.showCompleteModal} statusText={this.state.statusText}
                         spacePercentage={this.state.spacePercentage} onToggleReizeKey={this.onToggleReizeKey} showResizeKey={this.state.showResizeKey} />
             }
         </View>

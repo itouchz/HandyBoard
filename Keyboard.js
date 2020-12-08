@@ -39,7 +39,7 @@ export default Keyboard = props => {
                     </View>
                     <TouchableWithoutFeedback onLongPress={props.onToggleReizeKey} delayLongPress={2000}>
                         <View style={{ width: viewportWidth * props.spacePercentage, alignItems: 'center' }}>
-                            <ResizeKey showResizeKey={props.showResizeKey} onResizeSpace={props.onResizeSpace} />
+                            {props.keyboard === 'Fixed' ? null : <ResizeKey showResizeKey={props.showResizeKey} onResizeSpace={props.onResizeSpace} />}
                         </View>
                     </TouchableWithoutFeedback>
                     <View style={{ width: splitWidth }}>

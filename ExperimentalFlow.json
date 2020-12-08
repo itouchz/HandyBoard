@@ -1,0 +1,24 @@
+{
+    "GROUP_1": [
+        { "PRACTICE": [ "FIXED", "ADJUSTMENT", "HANDYBOARD" ] },
+        { 
+            "ACTUAL": [ "FIXED 1", "ADJUSTMENT 1", "HANDYBOARD 1", 
+                "FIXED 2", "ADJUSTMENT 2", "HANDYBOARD 2", 
+                "FIXED 3", "ADJUSTMENT 3", "HANDYBOARD 3", 
+                "FIXED 4", "ADJUSTMENT 4", "HANDYBOARD 4",
+                "FIXED 5", "ADJUSTMENT 5", "HANDYBOARD 5" ]
+        },
+        { "END": ["THANK"] }
+    ],
+    "GROUP_2": [
+        { "PRACTICE": [ "ADJUSTMENT", "HANDYBOARD", "FIXED" ] },
+        { 
+            "ACTUAL": [ "ADJUSTMENT 1", "HANDYBOARD 1", "FIXED 1",
+                "ADJUSTMENT 2", "HANDYBOARD 2", "FIXED 2",
+                "ADJUSTMENT 3", "HANDYBOARD 3", "FIXED 3",
+                "ADJUSTMENT 4", "HANDYBOARD 4", "FIXED 4",
+                "ADJUSTMENT 5", "HANDYBOARD 5", "FIXED 5" ]
+        },
+        { "END": ["THANK"] }
+    ]
+}

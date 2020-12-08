@@ -16,7 +16,7 @@ export default Block = props => {
             </View>
         </Modal>
         {
-            props.currentBlockState === 'start'
+            props.currentBlockState === 'adjustment' && props.currentKeyboard === 'HandyBoard'
                 ? <View style={{ alignItems: 'center' }}>
                     <Text style={{ fontSize: 72, marginBottom: 16, fontStyle: 'italic' }}>Adjustment Block</Text>
                     <TouchableHighlight style={{ ...styles.button }} underlayColor='#eee' onPress={props.onStartBlock}>
@@ -25,14 +25,16 @@ export default Block = props => {
                 </View>
                 : props.currentBlockState === 'practice' ?
                     <View style={{ alignItems: 'center' }}>
-                        <Text style={{ fontSize: 72, marginBottom: 16, fontStyle: 'italic' }}>Practice Block</Text>
+                        <Text style={{ fontSize: 72, fontStyle: 'italic' }}>Practice Block</Text>
+                        <Text style={{ fontSize: 24, marginBottom: 16, color: 'grey' }}>{props.currentKeyboard}</Text>
                         <TouchableHighlight style={{ ...styles.button }} underlayColor='#eee' onPress={props.onStartBlock}>
                             <Text style={{ ...styles.buttonText }}>START</Text>
                         </TouchableHighlight>
                     </View>
                     : props.currentBlockState === 'task' ?
                         <View style={{ alignItems: 'center' }}>
-                            <Text style={{ fontSize: 72, marginBottom: 16, fontStyle: 'italic' }}>Block No.{props.currentBlockNo - 1}</Text>
+                            <Text style={{ fontSize: 72, fontStyle: 'italic' }}>Block No.{props.currentBlockNo}</Text>
+                            <Text style={{ fontSize: 24, marginBottom: 16, color: 'grey' }}>{props.currentKeyboard}</Text>
                             <TouchableHighlight style={{ ...styles.button }} underlayColor='#eee' onPress={props.onStartBlock}>
                                 <Text style={{ ...styles.buttonText }}>START</Text>
                             </TouchableHighlight>
@@ -40,13 +42,13 @@ export default Block = props => {
                         : props.currentBlockState === 'end' ?
                             <View style={{ alignItems: 'center' }}>
                                 <Text style={{ fontSize: 48, marginBottom: 16, fontStyle: 'italic' }}>Completed!</Text>
-                                <Text style={{ fontSize: 24, marginBottom: 16 }}> 🙏🏻 Thank you 🙏🏻 </Text>
+                                <Text style={{ fontSize: 24, marginBottom: 16 }}> 🙏🏻 Thank You 🙏🏻 </Text>
                                 <TouchableHighlight style={{ ...styles.button }} underlayColor='#eee' onPress={props.onBackHome}>
                                     <Text style={{ ...styles.buttonText }}>HOME</Text>
                                 </TouchableHighlight>
                             </View>
                             : <View style={styles.container}>
-                                <Display style={styles.display} textColor='black' fontSize={24} text={props.targetText} />
+                                <Display style={styles.display} textColor='black' fontSize={24} text={props.targetText} statusText={props.statusText} />
                                 <Display style={styles.preview} textColor='white' fontSize={24} isBold={true} text={props.currentText + '_'} />
                                 <Keyboard keyboard={props.currentKeyboard} onType={props.onType} isCaptial={props.isCaptial} onToggleReizeKey={props.onToggleReizeKey}
                                     spacePercentage={props.spacePercentage} onResizeSpace={props.onResizeSpace} showResizeKey={props.showResizeKey} />

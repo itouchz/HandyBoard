@@ -218,49 +218,6 @@ export default class HomeScreen extends Component {
                 })
                 this.onReset()
             }
-
-            // if (blockNo <= 6 && this.state.currentBlockState == 'ongoing_adjustment') {
-            //     // Task CASE
-            //     this.setState({
-            //         currentBlockState: 'task',
-            //         currentBlockIndex: 0,
-            //         currentBlockNo: blockNo,
-            //         currentText: '',
-            //         errorCount: 0,
-            //     })
-            //     this.onReset()
-            // } else if (blockNo <= 6 && this.state.currentBlockState == 'ongoing_task') {
-            //     if (this.state.currentKeyboard === 'IS_QWERTY') {
-            //         // Task CASE
-            //         this.setState({
-            //             currentBlockState: 'task',
-            //             currentBlockIndex: 0,
-            //             currentBlockNo: blockNo,
-            //             currentText: '',
-            //             errorCount: 0,
-            //         })
-            //     } else {
-            //         // ADJUSTMENT CASE
-            //         this.setState({
-            //             currentBlockState: 'start',
-            //             currentBlockIndex: 0,
-            //             currentBlockNo: blockNo - 1,
-            //             currentText: '',
-            //             errorCount: 0,
-            //         })
-            //     }
-
-            //     this.onReset()
-            // } else {
-            //     this.setState({
-            //         currentBlockState: 'end',
-            //         currentBlockIndex: 0,
-            //         currentBlockNo: 0,
-            //         currentText: '',
-            //         errorCount: 0,
-            //     })
-            //     this.onReset()
-            // }
         }
     }
 

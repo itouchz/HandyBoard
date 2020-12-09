@@ -9,6 +9,7 @@ export default Block = props => {
             <View style={styles.centeredView}>
                 <View style={styles.modalView}>
                     <Text style={styles.modalText}>{props.resultText}</Text>
+                    <Text style={{ marginBottom: 16 }}>#INC: {props.upCount} #DEC: {props.downCount}</Text>
                     <TouchableHighlight style={{ ...styles.button, backgroundColor: 'black', borderWidth: 0 }} underlayColor='#777' onPress={() => { props.onNextPhrase(); }} >
                         <Text style={{ ...styles.buttonText, color: 'white' }}>NEXT</Text>
                     </TouchableHighlight>
@@ -41,8 +42,9 @@ export default Block = props => {
                         </View>
                         : props.currentBlockState === 'end' ?
                             <View style={{ alignItems: 'center' }}>
-                                <Text style={{ fontSize: 48, marginBottom: 16, fontStyle: 'italic' }}>Completed!</Text>
-                                <Text style={{ fontSize: 24, marginBottom: 16 }}> 🙏🏻 Thank You 🙏🏻 </Text>
+                                <Text style={{ fontSize: 48, fontStyle: 'italic' }}>Completed!</Text>
+                                <Text style={{ fontSize: 24 }}> 🙏🏻 Thank You 🙏🏻 </Text>
+                                <Text style={{ fontSize: 16, marginBottom: 16 }}>  [ ➕ : {props.totalUpCount} || ➖ : {props.totalDownCount} ]</Text>
                                 <TouchableHighlight style={{ ...styles.button }} underlayColor='#eee' onPress={props.onBackHome}>
                                     <Text style={{ ...styles.buttonText }}>HOME</Text>
                                 </TouchableHighlight>
@@ -51,7 +53,8 @@ export default Block = props => {
                                 <Display style={styles.display} textColor='black' fontSize={24} text={props.targetText} statusText={props.statusText} />
                                 <Display style={styles.preview} textColor='white' fontSize={24} isBold={true} text={props.currentText + '_'} />
                                 <Keyboard keyboard={props.currentKeyboard} onType={props.onType} isCaptial={props.isCaptial} onToggleReizeKey={props.onToggleReizeKey}
-                                    spacePercentage={props.spacePercentage} onResizeSpace={props.onResizeSpace} showResizeKey={props.showResizeKey} />
+                                    spacePercentage={props.spacePercentage} onResizeSpace={props.onResizeSpace} showResizeKey={props.showResizeKey}
+                                    upCount={props.upCount} downCount={props.downCount} />
                             </View>
         }
     </View>
@@ -152,7 +155,7 @@ const styles = StyleSheet.create({
     },
 
     modalText: {
-        marginBottom: 15,
+        // marginBottom: 15,
         textAlign: "center"
     }
 });

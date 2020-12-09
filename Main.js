@@ -27,7 +27,11 @@ export default class HomeScreen extends Component {
         statusText: '',
         pid: Math.floor(Math.random() * 9).toString() + Math.floor(Math.random() * 9).toString() + Math.floor(Math.random() * 9).toString(),
         currentGroup: null,
-        inSetCount: 0
+        inSetCount: 0,
+        totalUpCount: 0,
+        totalDownCount: 0,
+        upCount: 0,
+        downCount: 0
     }
 
     // Timer
@@ -51,9 +55,9 @@ export default class HomeScreen extends Component {
     onResizeSpace = action => {
         if (this.state.spacePercentage > 0 && this.state.spacePercentage < 1) {
             if (action === 'up') {
-                this.setState({ spacePercentage: this.state.spacePercentage + 0.01 })
+                this.setState({ spacePercentage: this.state.spacePercentage + 0.01, totalUpCount: this.state.totalUpCount + 1, upCount: this.state.upCount + 1 })
             } else {
-                this.setState({ spacePercentage: this.state.spacePercentage - 0.01 })
+                this.setState({ spacePercentage: this.state.spacePercentage - 0.01, totalDownCount: this.state.totalDownCount + 1, downCount: this.state.downCount + 1 })
             }
         } else {
             this.setState({ spacePercentage: 0.2 })
@@ -125,20 +129,20 @@ export default class HomeScreen extends Component {
             //ADJUSTMENT BLOCK
             this.setState({
                 currentBlockState: 'ongoing_adjustment', targetText: currentPhraseSet[0], currentBlockIndex: 0,
-                currentBlockNo: blockNo, currentPhraseSet, currentText: '', errorCount: 0,
+                currentBlockNo: blockNo, currentPhraseSet, currentText: '', errorCount: 0, upCount: 0, downCount: 0,
                 statusText: `${this.state.currentGroup}: ${this.state.currentKeyboard}, ongoing_adjustment - Block ${blockNo}, ${0 + 1} (P${this.state.pid})`
             })
         } else if (this.state.currentBlockState === 'practice') {
             this.setState({
                 currentBlockState: 'ongoing_practice', targetText: currentPhraseSet[0], currentBlockIndex: 0,
-                currentBlockNo: blockNo, currentPhraseSet, currentText: '', errorCount: 0,
+                currentBlockNo: blockNo, currentPhraseSet, currentText: '', errorCount: 0, upCount: 0, downCount: 0,
                 statusText: `${this.state.currentGroup}: ${this.state.currentKeyboard}, ongoing_practice - Block ${blockNo}, ${0 + 1} (P${this.state.pid})`
             })
         } else {
             //TASK BLOCK
             this.setState({
                 currentBlockState: 'ongoing_task', targetText: currentPhraseSet[0], currentBlockIndex: 0,
-                currentBlockNo: blockNo, currentPhraseSet, currentText: '', errorCount: 0,
+                currentBlockNo: blockNo, currentPhraseSet, currentText: '', errorCount: 0, upCount: 0, downCount: 0,
                 statusText: `${this.state.currentGroup}: ${this.state.currentKeyboard}, ongoing_task - Block ${blockNo}, ${0 + 1} (P${this.state.pid})`
             })
         }
@@ -150,7 +154,7 @@ export default class HomeScreen extends Component {
         let blockIndex = this.state.currentBlockIndex + 1
         if (blockIndex > 4 || this.state.currentBlockState == 'ongoing_adjustment') {
             // if adjustment block, do just 1 phrase
-            this.setState({ showCompleteModal: false })
+            this.setState({ showCompleteModal: false, upCount: 0, downCount: 0 })
             this.onNextBlock()
         } else {
             this.setState({
@@ -159,6 +163,7 @@ export default class HomeScreen extends Component {
                 currentText: '',
                 errorCount: 0,
                 showCompleteModal: false,
+                upCount: 0, downCount: 0,
                 statusText: `${this.state.currentGroup}: ${this.state.currentKeyboard}, ${this.state.currentBlockState} - Block ${this.state.currentBlockNo}, ${blockIndex + 1} (P${this.state.pid})`
             })
             this.onStart()
@@ -177,7 +182,7 @@ export default class HomeScreen extends Component {
                 })
             } else {
                 this.setState({
-                    inSetCount, currentBlockState: 'practice', currentKeyboard: 'Fixed',
+                    inSetCount, currentBlockState: 'practice', currentKeyboard: 'Fixed', spacePercentage: 0.2,
                     statusText: `${this.state.currentGroup}: Fixed, practice - Block ${blockNo}, ${0 + 1} (P${this.state.pid})`
                 })
             }
@@ -191,7 +196,7 @@ export default class HomeScreen extends Component {
                     currentBlockIndex: 0,
                     currentBlockNo: blockNo,
                     currentText: '',
-                    errorCount: 0,
+                    errorCount: 0, upCount: 0, downCount: 0
                 })
                 this.onReset()
             } else if (blockNo <= 5) {
@@ -203,7 +208,7 @@ export default class HomeScreen extends Component {
                     currentBlockIndex: 0,
                     currentBlockNo: blockNo,
                     currentText: '',
-                    errorCount: 0,
+                    errorCount: 0, upCount: 0, downCount: 0,
                     statusText: `${this.state.currentGroup}: ${this.state.currentKeyboard === 'HandyBoard' ? 'Fixed' : 'HandyBoard'}, ${this.state.currentKeyboard === 'HandyBoard' ? 'task' : 'adjustment'} - Block ${blockNo}, ${0 + 1} (P${this.state.pid})`
                 })
                 this.onReset()
@@ -215,6 +220,7 @@ export default class HomeScreen extends Component {
                     currentBlockNo: 0,
                     currentText: '',
                     errorCount: 0,
+                    upCount: 0, downCount: 0
                 })
                 this.onReset()
             }
@@ -228,7 +234,8 @@ export default class HomeScreen extends Component {
             currentBlockIndex: 0,
             currentBlockNo: 0,
             currentText: '',
-            errorCount: 0,
+            errorCount: 0, upCount: 0, downCount: 0,
+            totalDownCount: 0, totalUpCount: 0
         })
     }
 
@@ -242,7 +249,8 @@ export default class HomeScreen extends Component {
                         currentBlockNo={this.state.currentBlockNo} targetText={this.state.targetText} isCaptial={this.state.isCaptial}
                         resultText={this.state.resultText} onNextPhrase={this.onNextPhrase} onBackHome={this.onBackHome} onResizeSpace={this.onResizeSpace}
                         currentBlockIndex={this.state.currentBlockIndex} showCompleteModal={this.state.showCompleteModal} statusText={this.state.statusText}
-                        spacePercentage={this.state.spacePercentage} onToggleReizeKey={this.onToggleReizeKey} showResizeKey={this.state.showResizeKey} />
+                        spacePercentage={this.state.spacePercentage} onToggleReizeKey={this.onToggleReizeKey} showResizeKey={this.state.showResizeKey}
+                        upCount={this.state.upCount} downCount={this.state.downCount} totalUpCount={this.state.totalUpCount} totalDownCount={this.state.totalDownCount} />
             }
         </View>
     }
